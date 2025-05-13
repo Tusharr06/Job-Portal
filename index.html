@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobConnect - Job Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-briefcase"></i> JobConnect</h1>
+            <p>Find your dream job or perfect candidate</p>
+        </header>
+        
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="jobs">Browse Jobs</button>
+            <button class="tab-btn" data-tab="post">Post a Job</button>
+            <button class="tab-btn" data-tab="applications">My Applications</button>
+        </nav>
+        
+        <div class="main-content">
+            <!-- Post Job Section -->
+            <section id="postJobSection" class="form-section tab-content">
+                <h2><i class="fas fa-plus-circle"></i> Post a New Job</h2>
+                <form id="jobForm">
+                    <input type="hidden" id="jobId">
+                    <div class="form-group">
+                        <label for="title">Job Title</label>
+                        <input type="text" id="title" placeholder="e.g. Senior Software Engineer" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Company Name</label>
+                        <input type="text" id="company" placeholder="e.g. Tech Innovations Inc." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" placeholder="e.g. New York, NY (or Remote)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="salary">Salary Range</label>
+                        <input type="text" id="salary" placeholder="e.g. $80,000 - $100,000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="type">Job Type</label>
+                        <select id="type" required>
+                            <option value="">Select Job Type</option>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Internship">Internship</option>
+                            <option value="Freelance">Freelance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Education">Education</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Design">Design</option>
+                            <option value="Customer Service">Customer Service</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Job Description</label>
+                        <textarea id="description" rows="5" placeholder="Describe the job responsibilities, requirements, and benefits..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="requirements">Requirements</label>
+                        <textarea id="requirements" rows="3" placeholder="List the required skills, education, or experience..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="deadline">Application Deadline</label>
+                        <input type="date" id="deadline" required>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" id="submitBtn">Post Job</button>
+                        <button type="button" id="cancelBtn" class="hidden">Cancel</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Search and Filter Section -->
+            <section id="jobSearchSection" class="search-section tab-content active">
+                <h2><i class="fas fa-search"></i> Find Jobs</h2>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search by job title, company, or skills...">
+                    <select id="filterCategory">
+                        <option value="All">All Categories</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Education">Education</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Design">Design</option>
+                        <option value="Customer Service">Customer Service</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <select id="filterType">
+                        <option value="All">All Types</option>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Internship">Internship</option>
+                        <option value="Freelance">Freelance</option>
+                    </select>
+                </div>
+                
+                <!-- Job Listings -->
+                <div id="jobListings" class="job-listings">
+                    <!-- Jobs will be displayed here dynamically -->
+                    <div id="noJobs" class="hidden">
+                        <p>No jobs found. Try adjusting your search criteria.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Applications Section -->
+            <section id="applicationsSection" class="applications-section tab-content">
+                <h2><i class="fas fa-clipboard-list"></i> My Applications</h2>
+                <div class="applications-container">
+                    <table id="applicationsList">
+                        <thead>
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Company</th>
+                                <th>Applied On</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicationsListBody">
+                            <!-- Applications will be displayed here -->
+                        </tbody>
+                    </table>
+                    <div id="noApplications" class="no-content">
+                        <p>You haven't applied to any jobs yet.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- Job Details Modal -->
+        <div id="jobModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="jobDetails" class="job-details">
+                    <!-- Job details will be displayed here -->
+                </div>
+                <div class="modal-buttons">
+                    <button id="applyBtn" class="action-btn success-btn">Apply Now</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Application Form Modal -->
+        <div id="applicationModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Apply for <span id="applicationJobTitle"></span></h2>
+                <form id="applicationForm">
+                    <input type="hidden" id="applicationJobId">
+                    <div class="form-group">
+                        <label for="applicantName">Full Name</label>
+                        <input type="text" id="applicantName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="applicantEmail">Email</label>
+                        <input type="email" id="applicantEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="applicantPhone">Phone</label>
+                        <input type="tel" id="applicantPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="applicantResume">Resume Link</label>
+                        <input type="url" id="applicantResume" placeholder="Link to your resume (Google Drive, Dropbox, etc.)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="coverLetter">Cover Letter</label>
+                        <textarea id="coverLetter" rows="5" placeholder="Why are you a good fit for this role?" required></textarea>
+                    </div>
+                    <button type="submit" class="action-btn success-btn">Submit Application</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    
+    <!-- App Scripts -->
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
