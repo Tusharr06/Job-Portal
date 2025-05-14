@@ -1,26 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JobConnect - Job Portal</title>
+    <title>JobConnect Pro - Advanced Job Portal</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-briefcase"></i> JobConnect</h1>
-            <p>Find your dream job or perfect candidate</p>
-        </header>
-        
-        <nav class="tabs">
-            <button class="tab-btn active" data-tab="jobs">Browse Jobs</button>
-            <button class="tab-btn" data-tab="post">Post a Job</button>
-            <button class="tab-btn" data-tab="applications">My Applications</button>
+<body class="dark-theme">
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content auth-modal">
+            <div class="auth-container">
+                <div class="auth-header">
+                    <h2><i class="fas fa-briefcase"></i> JobConnect Pro</h2>
+                    <p>Your Gateway to Professional Opportunities</p>
+                </div>
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Login</button>
+                    <button class="auth-tab" data-tab="register">Register</button>
+                </div>
+                <form id="loginForm" class="auth-form active">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Login as:</label>
+                        <div class="radio-group">
+                            <input type="radio" id="userLogin" name="loginType" value="user" checked>
+                            <label for="userLogin">User</label>
+                            <input type="radio" id="adminLogin" name="loginType" value="admin">
+                            <label for="adminLogin">Admin</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-btn">Login</button>
+                </form>
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="registerName">Full Name</label>
+                        <input type="text" id="registerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container (Initially Hidden) -->
+    <div id="appContainer" class="container hidden">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-briefcase"></i>
+                <span>JobConnect Pro</span>
+            </div>
+            <div class="nav-user">
+                <span id="userInfo">Welcome, <span id="username"></span></span>
+                <button id="logoutBtn" class="nav-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
         </nav>
-        
+
         <div class="main-content">
+            <nav class="tabs" id="navTabs">
+                <button class="tab-btn active" data-tab="jobs">Browse Jobs</button>
+                <button class="tab-btn admin-only" data-tab="post">Post a Job</button>
+                <button class="tab-btn" data-tab="applications">My Applications</button>
+            </nav>
+
             <!-- Post Job Section -->
             <section id="postJobSection" class="form-section tab-content">
                 <h2><i class="fas fa-plus-circle"></i> Post a New Job</h2>
@@ -195,9 +254,11 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
     
     <!-- App Scripts -->
     <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
