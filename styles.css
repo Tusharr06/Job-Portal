@@ -6,19 +6,19 @@
 }
 
 :root {
-    --primary-color: #3366cc;
-    --secondary-color: #254e9c;
-    --accent-color: #7fc8f8;
-    --success-color: #4caf50;
-    --warning-color: #ff9800;
-    --danger-color: #f44336;
-    --text-color: #333;
-    --text-light: #666;
-    --text-dark: #222;
-    --bg-color: #f8f9fa;
-    --card-bg: #ffffff;
-    --border-color: #e0e0e0;
-    --shadow-color: rgba(0, 0, 0, 0.1);
+    --primary-color: #6366f1;
+    --secondary-color: #4f46e5;
+    --accent-color: #818cf8;
+    --success-color: #22c55e;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --bg-dark: #0f172a;
+    --bg-darker: #1e293b;
+    --text-light: #e2e8f0;
+    --text-dark: #f8fafc;
+    --border-color: #334155;
+    --card-bg: #1e293b;
+    --hover-bg: #334155;
 }
 
 body {
@@ -71,7 +71,8 @@ header i {
 }
 
 .tab-btn {
-    background: none;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
     border: none;
     padding: 12px 25px;
     margin: 0 5px;
@@ -79,12 +80,11 @@ header i {
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease;
-    color: var(--text-color);
     font-weight: 600;
 }
 
 .tab-btn:hover {
-    background-color: rgba(51, 102, 204, 0.1);
+    background-color: var(--hover-bg);
 }
 
 .tab-btn.active {
@@ -151,10 +151,12 @@ label {
 input, select, textarea {
     width: 100%;
     padding: 12px;
+    background-color: var(--bg-dark);
     border: 1px solid var(--border-color);
     border-radius: 5px;
     font-size: 1rem;
     transition: border-color 0.3s;
+    color: var(--text-light);
 }
 
 textarea {
@@ -165,7 +167,7 @@ textarea {
 input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(51, 102, 204, 0.2);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
 }
 
 button {
@@ -215,18 +217,18 @@ button:hover {
 }
 
 .job-card {
-    background-color: white;
+    background-color: var(--card-bg);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: all 0.3s ease;
     cursor: pointer;
     border-left: 5px solid var(--primary-color);
 }
 
 .job-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .job-card-header {
@@ -335,7 +337,7 @@ button:hover {
 }
 
 .modal-content {
-    background-color: white;
+    background-color: var(--bg-darker);
     margin: 50px auto;
     padding: 30px;
     border-radius: 10px;
@@ -344,6 +346,7 @@ button:hover {
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
     position: relative;
     animation: slideDown 0.3s;
+    border: 1px solid var(--border-color);
 }
 
 @keyframes slideDown {
@@ -502,6 +505,121 @@ tbody tr:hover {
 .status-rejected {
     background-color: rgba(244, 67, 54, 0.1);
     color: var(--danger-color);
+}
+
+/* Dark Theme Styles */
+.dark-theme {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--bg-darker);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-btn {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+/* Auth Modal */
+.auth-modal {
+    max-width: 400px;
+    background-color: var(--bg-darker);
+}
+
+.auth-container {
+    padding: 2rem;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.auth-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 0.75rem;
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    color: var(--text-light);
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.auth-tab.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: block;
+}
+
+.auth-btn {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+}
+
+.auth-btn:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
 }
 
 /* Responsive */
