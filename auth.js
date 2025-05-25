@@ -13,6 +13,13 @@ const usernameSpan = document.getElementById('username');
 const logoutBtn = document.getElementById('logoutBtn');
 const adminElements = document.querySelectorAll('.admin-only');
 
+// Admin credentials
+const ADMIN_CREDENTIALS = {
+    email: 'admin@jobconnect.pro',
+    password: 'admin123',
+    name: 'Admin'
+};
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', initAuth);
 loginForm.addEventListener('submit', handleLogin);
@@ -58,24 +65,25 @@ async function handleLogin(e) {
     const password = document.getElementById('loginPassword').value;
     const loginType = document.querySelector('input[name="loginType"]:checked').value;
     
-    // Admin login check
-    if (loginType === 'admin') {
-        if (email === 'admin@gmail.com' && password === 'admin@123') {
-            const adminUser = {
-                name: 'Admin',
-                email: email,
-                isAdmin: true
-            };
-            handleAuthSuccess(adminUser);
-            return;
-        } else {
-            alert('Invalid admin credentials');
-            return;
-        }
-    }
-    
-    // Regular user login
     try {
+        // Admin login check
+        if (loginType === 'admin') {
+            if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
+                const adminUser = {
+                    name: ADMIN_CREDENTIALS.name,
+                    email: ADMIN_CREDENTIALS.email,
+                    isAdmin: true
+                };
+                handleAuthSuccess(adminUser);
+                showToast('Welcome back, Admin!', 'success');
+                return;
+            } else {
+                showToast('Invalid admin credentials', 'error');
+                return;
+            }
+        }
+        
+        // Regular user login
         const userDoc = await db.collection('users')
             .where('email', '==', email)
             .where('password', '==', password)
@@ -88,12 +96,13 @@ async function handleLogin(e) {
                 isAdmin: false
             };
             handleAuthSuccess(userData);
+            showToast('Login successful!', 'success');
         } else {
-            alert('Invalid credentials');
+            showToast('Invalid credentials', 'error');
         }
     } catch (error) {
         console.error('Login error:', error);
-        alert('Error during login');
+        showToast('Error during login', 'error');
     }
 }
 
@@ -112,7 +121,7 @@ async function handleRegister(e) {
             .get();
         
         if (!existingUser.empty) {
-            alert('Email already registered');
+            showToast('Email already registered', 'error');
             return;
         }
         
@@ -132,9 +141,10 @@ async function handleRegister(e) {
         };
         
         handleAuthSuccess(userData);
+        showToast('Registration successful!', 'success');
     } catch (error) {
         console.error('Registration error:', error);
-        alert('Error during registration');
+        showToast('Error during registration', 'error');
     }
 }
 
@@ -144,6 +154,7 @@ function handleLogout() {
     currentUser = null;
     isAdmin = false;
     showAuthModal();
+    showToast('Logged out successfully', 'success');
 }
 
 // Handle Authentication Success
@@ -181,4 +192,29 @@ function hideAuthModal() {
 
 function showApp() {
     appContainer.classList.remove('hidden');
+}
+
+// Toast Notifications
+function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <div class="toast-content">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                          type === 'error' ? 'fa-exclamation-circle' : 
+                          'fa-info-circle'}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Trigger animation
+    setTimeout(() => toast.classList.add('show'), 100);
+    
+    // Remove toast after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }
