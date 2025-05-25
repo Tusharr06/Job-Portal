@@ -78,7 +78,76 @@
                 <button class="tab-btn active" data-tab="jobs">Browse Jobs</button>
                 <button class="tab-btn admin-only" data-tab="post">Post a Job</button>
                 <button class="tab-btn" data-tab="applications">My Applications</button>
+                <button class="tab-btn admin-only" data-tab="dashboard">Admin Dashboard</button>
             </nav>
+
+            <!-- Admin Dashboard Section -->
+            <section id="adminDashboardSection" class="dashboard-section tab-content">
+                <div class="dashboard-header">
+                    <h2><i class="fas fa-chart-line"></i> Admin Dashboard</h2>
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <i class="fas fa-briefcase"></i>
+                            <h3>Total Jobs</h3>
+                            <p id="totalJobs">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-users"></i>
+                            <h3>Total Users</h3>
+                            <p id="totalUsers">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>Applications</h3>
+                            <p id="totalApplications">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>Active Jobs</h3>
+                            <p id="activeJobs">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <div class="dashboard-section">
+                        <h3>Recent Applications</h3>
+                        <div class="table-container">
+                            <table id="recentApplicationsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Applicant</th>
+                                        <th>Job Title</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentApplicationsBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h3>Job Management</h3>
+                        <div class="table-container">
+                            <table id="jobManagementTable">
+                                <thead>
+                                    <tr>
+                                        <th>Job Title</th>
+                                        <th>Company</th>
+                                        <th>Posted Date</th>
+                                        <th>Applications</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="jobManagementBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <!-- Post Job Section -->
             <section id="postJobSection" class="form-section tab-content">
