@@ -29,6 +29,15 @@ const applicationForm = document.getElementById('applicationForm');
 const applicationJobId = document.getElementById('applicationJobId');
 const applicationJobTitle = document.getElementById('applicationJobTitle');
 
+// DOM Elements for Admin Dashboard
+const adminDashboardSection = document.getElementById('adminDashboardSection');
+const totalJobsElement = document.getElementById('totalJobs');
+const totalUsersElement = document.getElementById('totalUsers');
+const totalApplicationsElement = document.getElementById('totalApplications');
+const activeJobsElement = document.getElementById('activeJobs');
+const recentApplicationsBody = document.getElementById('recentApplicationsBody');
+const jobManagementBody = document.getElementById('jobManagementBody');
+
 // App State
 let jobsData = [];
 let applicationsData = [];
@@ -69,6 +78,9 @@ tabButtons.forEach(button => {
         } else if (tabId === 'applications') {
             document.getElementById('applicationsSection').classList.add('active');
             loadApplications();
+        } else if (tabId === 'dashboard') {
+            document.getElementById('adminDashboardSection').classList.add('active');
+            loadAdminDashboard();
         }
     });
 });
@@ -579,3 +591,210 @@ window.deleteJob = deleteJob;
 window.viewApplication = viewApplication;
 window.withdrawApplication = withdrawApplication;
 window.closeApplicationDetailModal = closeApplicationDetailModal;
+
+// Load Admin Dashboard Data
+async function loadAdminDashboard() {
+    if (!isAdmin) return;
+
+    try {
+        // Get total jobs
+        const jobsSnapshot = await jobsCollection.get();
+        const totalJobs = jobsSnapshot.size;
+        totalJobsElement.textContent = totalJobs;
+
+        // Get active jobs (not expired)
+        const now = new Date();
+        let activeJobs = 0;
+        jobsSnapshot.forEach(doc => {
+            const job = doc.data();
+            if (new Date(job.deadline) > now) {
+                activeJobs++;
+            }
+        });
+        activeJobsElement.textContent = activeJobs;
+
+        // Get total users
+        const usersSnapshot = await usersCollection.get();
+        totalUsersElement.textContent = usersSnapshot.size;
+
+        // Get total applications
+        const applicationsSnapshot = await applicationsCollection.get();
+        totalApplicationsElement.textContent = applicationsSnapshot.size;
+
+        // Load recent applications
+        loadRecentApplications();
+
+        // Load job management table
+        loadJobManagement();
+    } catch (error) {
+        console.error("Error loading dashboard data:", error);
+    }
+}
+
+// Load Recent Applications
+async function loadRecentApplications() {
+    try {
+        const snapshot = await applicationsCollection
+            .orderBy('appliedAt', 'desc')
+            .limit(10)
+            .get();
+
+        recentApplicationsBody.innerHTML = '';
+
+        snapshot.forEach(async doc => {
+            const application = doc.data();
+            const job = await getJobById(application.jobId);
+            
+            if (job) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${application.name}</td>
+                    <td>${job.title}</td>
+                    <td>${formatDate(application.appliedAt.toDate())}</td>
+                    <td>
+                        <span class="status-badge ${application.status.toLowerCase()}">${application.status}</span>
+                    </td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewApplicationDetails('${doc.id}')">
+                            View
+                        </button>
+                        ${application.status === 'Pending' ? `
+                            <button class="action-btn approve-btn" onclick="updateApplicationStatus('${doc.id}', 'Approved')">
+                                Approve
+                            </button>
+                            <button class="action-btn reject-btn" onclick="updateApplicationStatus('${doc.id}', 'Rejected')">
+                                Reject
+                            </button>
+                        ` : ''}
+                    </td>
+                `;
+                recentApplicationsBody.appendChild(row);
+            }
+        });
+    } catch (error) {
+        console.error("Error loading recent applications:", error);
+    }
+}
+
+// Load Job Management Table
+async function loadJobManagement() {
+    try {
+        const snapshot = await jobsCollection
+            .orderBy('postedAt', 'desc')
+            .get();
+
+        jobManagementBody.innerHTML = '';
+
+        snapshot.forEach(async doc => {
+            const job = doc.data();
+            const applicationsSnapshot = await applicationsCollection
+                .where('jobId', '==', doc.id)
+                .get();
+
+            const now = new Date();
+            const isExpired = new Date(job.deadline) < now;
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${job.title}</td>
+                <td>${job.company}</td>
+                <td>${formatDate(job.postedAt.toDate())}</td>
+                <td>${applicationsSnapshot.size}</td>
+                <td>
+                    <span class="status-badge ${isExpired ? 'status-expired' : 'status-active'}">
+                        ${isExpired ? 'Expired' : 'Active'}
+                    </span>
+                </td>
+                <td>
+                    <button class="action-btn view-btn" onclick="viewJob('${doc.id}')">
+                        View
+                    </button>
+                    <button class="action-btn" onclick="editJob('${doc.id}')">
+                        Edit
+                    </button>
+                    <button class="action-btn reject-btn" onclick="deleteJob('${doc.id}')">
+                        Delete
+                    </button>
+                </td>
+            `;
+            jobManagementBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error("Error loading job management:", error);
+    }
+}
+
+// Update Application Status
+async function updateApplicationStatus(applicationId, status) {
+    try {
+        await applicationsCollection.doc(applicationId).update({
+            status: status,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        loadRecentApplications();
+    } catch (error) {
+        console.error("Error updating application status:", error);
+    }
+}
+
+// View Application Details
+function viewApplicationDetails(applicationId) {
+    // Implementation similar to viewApplication but with admin controls
+    const application = applicationsData.find(app => app.id === applicationId);
+    if (application) {
+        getJobById(application.jobId).then(job => {
+            if (job) {
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.style.display = 'block';
+                
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <span class="close" onclick="closeApplicationDetailModal(this)">&times;</span>
+                        <h2>Application Details</h2>
+                        <div class="job-section">
+                            <h3>Job Information</h3>
+                            <p><strong>Title:</strong> ${job.title}</p>
+                            <p><strong>Company:</strong> ${job.company}</p>
+                        </div>
+                        <div class="job-section">
+                            <h3>Application Information</h3>
+                            <p><strong>Applied On:</strong> ${formatDate(application.appliedAt.toDate())}</p>
+                            <p><strong>Status:</strong> 
+                                <span class="status-badge ${application.status.toLowerCase()}">${application.status}</span>
+                            </p>
+                        </div>
+                        <div class="job-section">
+                            <h3>Applicant Information</h3>
+                            <p><strong>Name:</strong> ${application.name}</p>
+                            <p><strong>Email:</strong> ${application.email}</p>
+                            <p><strong>Phone:</strong> ${application.phone}</p>
+                            <p><strong>Resume:</strong> <a href="${application.resumeLink}" target="_blank">View Resume</a></p>
+                        </div>
+                        <div class="job-section">
+                            <h3>Cover Letter</h3>
+                            <p>${application.coverLetter.replace(/\n/g, '<br>')}</p>
+                        </div>
+                        ${application.status === 'Pending' ? `
+                            <div class="modal-buttons">
+                                <button class="action-btn approve-btn" onclick="updateApplicationStatus('${applicationId}', 'Approved')">
+                                    Approve Application
+                                </button>
+                                <button class="action-btn reject-btn" onclick="updateApplicationStatus('${applicationId}', 'Rejected')">
+                                    Reject Application
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+            }
+        });
+    }
+}
+
+// Make admin functions available globally
+window.updateApplicationStatus = updateApplicationStatus;
+window.viewApplicationDetails = viewApplicationDetails;
